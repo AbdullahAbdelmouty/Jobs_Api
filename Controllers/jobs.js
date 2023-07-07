@@ -1,7 +1,6 @@
 const getAllJobs = async(req,res)=>{
-    res.status(200).send("get all jobs");
+    res.status(200).json({msg:"get all jobs"});
 }
-
 const getJob = async(req,res)=>{
     res.status(200).send("get job");
 }

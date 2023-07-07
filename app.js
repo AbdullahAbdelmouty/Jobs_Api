@@ -8,8 +8,11 @@ const authRourers = require('./Routers/auth')
 const app = express();
 app.use(express.json());
 //router
-app.use('api/v1/jobs',jobRouters);
-app.use('api/v1/auth',authRourers)
+app.get('/',(req,res)=>{
+    res.send('<h1>Jobs API</h1><a href="/api-docs">Documentation</a>');
+})
+app.use('/api/v1/jobs',jobRouters);
+app.use('/api/v1/auth',authRourers);
 const port = process.env.PORT || 3000;
 const start = async()=>{
     try {
