@@ -1,4 +1,5 @@
 const User  = require("../Models/User");
+const{BadRequestError,UnauthorizedError,NotFoundError} = require('../Errors')
 const register = async(req,res)=>{
     const user = await User.create({...req.body});
     const token = user.createToken();
@@ -8,16 +9,16 @@ const register = async(req,res)=>{
 const login = async(req,res)=>{
     const {email,password} = req.body;
     if(!password||!email){
-        res.send("please provide name and email");
+        throw new BadRequestError("please provide name and email");
     }
     const user = await User.findOne({email});
     if(!user){
-        res.send("email not exsit");
+        throw new UnauthorizedError("Invalid Credentials") ;
     }
 
     const isPasswordCorrect = await user.comparePassword(password);
     if(!isPasswordCorrect){
-        res.send("invaild password")
+        throw new UnauthorizedError("Invalid Credentials") ;
     }
 
     const token = user.createToken();
