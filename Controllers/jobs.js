@@ -1,9 +1,16 @@
-const Job = require('../Models/Job')
+const Job = require('../Models/Job');
+const {NotFoundError} = require('../Errors')
 const getAllJobs = async(req,res)=>{
-    res.status(200).json({msg:"get all jobs"});
+    const jobs = await Job.find({createdBy: req.user.userId}).sort('createdAt');
+    res.status(200).json({jobs});
 }
 const getJob = async(req,res)=>{
-    res.status(200).send("get job");
+    const {user:{userId},params:{id: jobId}} = req;
+    const job = await Job.findOne({_id:jobId,createdBy:userId});
+    if(!job){
+        throw new NotFoundError(`job by id ${jobId} not exist`);
+    }
+    res.status(200).json({job})
 }
 const createJob = async(req,res)=>{
     req.body.createdBy = req.user.userId;
@@ -11,7 +18,7 @@ const createJob = async(req,res)=>{
     res.status(201).json({job});
 }
 const deleteJob = async(req,res)=>{
-    res.status(200).send("delete job");
+    
 }
 const updateJob = async(req,res)=>{
     res.status(200).send("update job");
