@@ -1,5 +1,5 @@
 const User  = require("../Models/User");
-const{BadRequestError,UnauthorizedError,NotFoundError} = require('../Errors')
+const{BadRequestError,UnauthorizedError} = require('../Errors')
 const register = async(req,res)=>{
     const user = await User.create({...req.body});
     const token = user.createToken();
