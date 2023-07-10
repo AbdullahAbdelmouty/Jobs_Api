@@ -7,13 +7,11 @@ const jobRouters = require('./Routers/jobs');
 const authRourers = require('./Routers/auth');
 const errorHandlerMiddlware = require('./Middlwares/ErrorHandlwer');
 const NotFoundMiddlware = require('./Middlwares/NotFound');
+const authenticated = require('./Middlwares/authentication');
 const app = express();
 app.use(express.json());
 //router
-app.get('/',(req,res)=>{
-    res.send('<h1>Jobs API</h1><a href="/api-docs">Documentation</a>');
-})
-app.use('/api/v1/jobs',jobRouters);
+app.use('/api/v1/jobs',authenticated,jobRouters);
 app.use('/api/v1/auth',authRourers);
 //Middlwares
 app.use(NotFoundMiddlware)

@@ -6,7 +6,6 @@ const getJob = async(req,res)=>{
     res.status(200).send("get job");
 }
 const createJob = async(req,res)=>{
-    console.log(req.body);
     req.body.createdBy = req.user.userId;
     const job = await Job.create(req.body);
     res.status(201).json({job});
