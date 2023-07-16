@@ -9,9 +9,21 @@ const authRourers = require('./Routers/auth');
 const errorHandlerMiddlware = require('./Middlwares/ErrorHandlwer');
 const NotFoundMiddlware = require('./Middlwares/NotFound');
 const authenticated = require('./Middlwares/authentication');
+// Import security packages
+const helmet = require('helmet');
+const cors = require('cors');
+const ratelimit = require('express-rate-limit');
 
 const app = express();
+
 //middlewares
+app.use(ratelimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100 // limit each IP to 100 requests per windowMs
+}));
+app.use(cors());
+app.use(helmet());
+app.use("trust proxy",1);
 app.use(express.json());
 //routes
 app.use('/api/v1/jobs',authenticated,jobRouters);
