@@ -1,12 +1,36 @@
 const { CustomApiError } = require("../Errors")
 
 const errorHandlerMiddlware =  (err,req,res,next)=>{
-    if (err instanceof CustomApiError) {
-        return res.status(err.statusCode).json({ msg: err.message })
-      }
-      return res
-        .status(400)
-        .send('Something went wrong try again later')
+    let customError =
+    {statusCode: err.statusCode || 500,
+      msg: err.message  ||"Something went wrong try again later"}
+      // Validation Error
+    if (err.name === 'ValidationError') {
+        customError.msg = Object.values(err.errors).map(item => item.message).join(',')
+        customError.statusCode = 400
+    }
+    // Mongo Duplicate Key Error
+    if (err.code === 11000) {
+        customError.msg = `Duplicate ${Object.keys(err.keyValue)} entered`
+        customError.statusCode = 400
+    }
+    //cast error
+    if (err.name === 'CastError') {
+        customError.msg = `No item found with id : ${err.value}`
+        customError.statusCode = 404
+    }
+    // JWT Error
+    if (err.name === 'JsonWebTokenError') {
+        customError.msg = 'Invalid Token'
+        customError.statusCode = 400
+    }
+    // JWT Expired Error
+    if (err.name === 'TokenExpiredError') {
+        customError.msg = 'Token Expired'
+        customError.statusCode = 400
+    }
+    return res.status(customError.statusCode).json({ msg: customError.msg })
+
 }
 
 module.exports = errorHandlerMiddlware;
