@@ -22,12 +22,12 @@ const errorHandlerMiddlware =  (err,req,res,next)=>{
     // JWT Error
     if (err.name === 'JsonWebTokenError') {
         customError.msg = 'Invalid Token'
-        customError.statusCode = 400
+        customError.statusCode = 401
     }
     // JWT Expired Error
     if (err.name === 'TokenExpiredError') {
         customError.msg = 'Token Expired'
-        customError.statusCode = 400
+        customError.statusCode = 401
     }
     return res.status(customError.statusCode).json({ msg: customError.msg })
 
